@@ -4,8 +4,11 @@ require File.join(File.dirname(__FILE__), 'windows', 'functions')
 
 class File
   include Windows::File::Constants
+  include Windows::File::Functions
   extend Windows::File::Structs
   extend Windows::File::Functions
+
+  ## SINGLETON METHODS
 
   def self.attributes(file)
     attributes = GetFileAttributesW(file.wincode)
@@ -34,7 +37,8 @@ class File
   end
 
   # Sets the file attributes based on the given (numeric) +flags+. This does
-  # not remove existing attributes, it merely adds to them.
+  # not remove existing attributes, it merely adds to them. Use the
+  # File.remove_attributes method if you want to remove them.
   #
   # Please not that certain attributes cannot always be applied. For example,
   # you cannot convert a regular file into a directory. Common sense should
@@ -51,6 +55,48 @@ class File
     attributes |= flags
 
     if SetFileAttributesW(wfile, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  # Removes the file attributes based on the given (numeric) +flags+.
+  #
+  def self.remove_attributes(file, flags)
+    wfile = file.wincode
+    attributes = GetFileAttributesW(wfile)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    attributes &= ~flags
+
+    if SetFileAttributesW(file, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  ## INSTANCE METHODS
+
+  def archive=(bool)
+    wide_path  = self.path.wincode
+    attributes = GetFileAttributesW(wide_path)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    if bool
+      attributes |= FILE_ATTRIBUTE_ARCHIVE;
+    else
+      attributes &= ~FILE_ATTRIBUTE_ARCHIVE;
+    end
+
+    if SetFileAttributesW(wide_path, attributes) == 0
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
