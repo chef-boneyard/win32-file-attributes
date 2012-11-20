@@ -102,4 +102,48 @@ class File
 
     self
   end
+
+  def compressed=(bool)
+    in_buf = FFI::MemoryPointer.new(:ulong)
+    bytes  = FFI::MemoryPointer.new(:ulong)
+
+    compression_value = bool ? COMPRESSION_FORMAT_DEFAULT : COMPRESSION_FORMAT_NONE
+    in_buf.write_ulong(compression_value)
+
+    # We can't use get_osfhandle here because we need specific attributes
+    handle = CreateFileW(
+      self.path.wincode,
+      FILE_READ_DATA | FILE_WRITE_DATA,
+      FILE_SHARE_READ | FILE_SHARE_WRITE,
+      nil,
+      OPEN_EXISTING,
+      0,
+      0
+    )
+
+    if handle == INVALID_HANDLE_VALUE
+      raise SystemCallError.new("CreateFile", FFI.errno)
+    end
+
+    begin
+      bool = DeviceIoControl(
+        handle,
+        FSCTL_SET_COMPRESSION(),
+        in_buf,
+        in_buf.size,
+        nil,
+        0,
+        bytes,
+        nil
+      )
+
+      unless bool
+        raise SystemCallError.new("DeviceIoControl", FFI.errno)
+      end
+    ensure
+      CloseHandle(handle)
+    end
+
+    self
+  end
 end
