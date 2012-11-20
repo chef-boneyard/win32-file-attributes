@@ -5,6 +5,7 @@ require File.join(File.dirname(__FILE__), 'windows', 'functions')
 class File
   include Windows::File::Constants
   include Windows::File::Functions
+  extend Windows::File::Constants
   extend Windows::File::Structs
   extend Windows::File::Functions
 
@@ -75,11 +76,23 @@ class File
 
     attributes &= ~flags
 
-    if SetFileAttributesW(file, attributes) == 0
+    if SetFileAttributesW(wfile, attributes) == 0
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
     self
+  end
+
+  def self.temporary?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_TEMPORARY)
+  end
+
+  def self.sparse?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_SPARSE_FILE)
+  end
+
+  def self.system?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_SYSTEM)
   end
 
   ## INSTANCE METHODS
@@ -200,7 +213,7 @@ class File
 
   alias :content_indexed= :indexed=
 
-    # Sets the normal attribute. Note that only 'true' is a valid argument,
+  # Sets the normal attribute. Note that only 'true' is a valid argument,
   # which has the effect of removing most other attributes.  Attempting to
   # pass any value except true will raise an ArgumentError.
   #
@@ -368,5 +381,17 @@ class File
     end
 
     self
+  end
+
+  private
+
+  def self.check_for_attribute(file, attribute)
+    attributes = GetFileAttributesW(file.wincode)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    attributes & attribute > 0 ? true : false
   end
 end

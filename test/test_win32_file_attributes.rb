@@ -30,64 +30,78 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_equal('0.7.0', File::WIN32_FILE_VERSION)
   end
 
+  test "temporary? singleton method basic functionality" do
+    assert_respond_to(File, :temporary?)
+    assert_nothing_raised{ File.temporary?(@@file) }
+  end
+
+  test "temporary? singleton method returns expected value" do
+    assert_false(File.temporary?(@@file))
+  end
+
+  test "temporary? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.temporary? }
+    assert_raises(ArgumentError){ File.temporary?(@@file, 'foo') }
+  end
+
+  test "temporary? instance method basic functionality" do
+    assert_respond_to(@fh, :temporary=)
+    assert_nothing_raised{ @fh.temporary = true }
+  end
+
+  test "temporary? instance method works as expected" do
+    assert_false(File.temporary?(@@file))
+    @fh.temporary = true
+    assert_true(File.temporary?(@@file))
+  end
+
+  test "system? singleton method basic functionality" do
+    assert_respond_to(File, :system?)
+    assert_nothing_raised{ File.system?(@@file) }
+  end
+
+  test "system? singleton method returns the expected value" do
+    assert_false(File.system?(@@file))
+  end
+
+  test "system singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.system? }
+    assert_raises(ArgumentError){ File.system?(@@file, 'foo') }
+  end
+
+  test "system instance method basic functionality" do
+    assert_respond_to(@fh, :system=)
+    assert_nothing_raised{ @fh.system = true }
+  end
+
+  test "system instance method works as expected" do
+    assert_false(File.system?(@@file))
+    @fh.system = true
+    assert_true(File.system?(@@file))
+  end
+
+  test "sparse? singleton method basic functionality" do
+    assert_respond_to(File, :sparse?)
+    assert_nothing_raised{ File.sparse?(@@file) }
+  end
+
+  test "sparse? singleton method returns expected value" do
+    assert_false(File.sparse?(@@file))
+  end
+
+  test "sparse? singleton method requires one argument" do
+    assert_raises(ArgumentError){ File.sparse? }
+    assert_raises(ArgumentError){ File.sparse?(@@file, 'foo') }
+  end
+
+  # I don't actually test true assignment here since making a file a
+  # sparse file can't be undone.
+  test "sparse? instance method basic functionality" do
+    assert_respond_to(@fh, :sparse=)
+    assert_nothing_raised{ @fh.sparse= false }
+  end
+
 =begin
-   def test_is_directory
-      assert_true(File.directory?(Dir.pwd))
-      assert_false(File.directory?(@@file))
-      assert_false(File.directory?('C:/aaabbbccc'))
-   end
-
-   def test_temporary
-      assert_respond_to(File, :temporary?)
-      assert_nothing_raised{ File.temporary?(@@file) }
-      assert_equal(false, File.temporary?(@@file))
-   end
-
-   def test_temporary_instance
-      assert_respond_to(@fh, :temporary=)
-      assert_nothing_raised{ @fh.temporary = true }
-      assert(File.temporary?(@@file))
-   end
-
-   def test_temporary_expected_errors
-      assert_raises(ArgumentError){ File.temporary? }
-      assert_raises(ArgumentError){ File.temporary?(@@file, 'foo') }
-   end
-
-   def test_system
-      assert_respond_to(File, :system?)
-      assert_nothing_raised{ File.system?(@@file) }
-      assert_equal(false, File.system?(@@file))
-   end
-
-   def test_system_instance
-      assert_respond_to(@fh, :system=)
-      assert_nothing_raised{ @fh.system = true }
-      assert(File.system?(@@file))
-   end
-
-   def test_system_expected_errors
-      assert_raises(ArgumentError){ File.system? }
-      assert_raises(ArgumentError){ File.system?(@@file, 'foo') }
-   end
-
-   def test_sparse
-      assert_respond_to(File, :sparse?)
-      assert_nothing_raised{ File.sparse?(@@file) }
-      assert_equal(false, File.sparse?(@@file))
-   end
-
-   # I don't actually test assignment here since making a file a sparse
-   # file can't be undone.
-   def test_sparse_instance
-      assert_respond_to(@fh, :sparse=)
-   end
-
-   def test_sparse_file_expected_errors
-      assert_raises(ArgumentError){ File.sparse? }
-      assert_raises(ArgumentError){ File.sparse?(@@file, 'foo') }
-   end
-
    def test_reparse_point
       assert_respond_to(File, :reparse_point?)
       assert_nothing_raised{ File.reparse_point?(@@file) }
