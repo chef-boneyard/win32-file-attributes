@@ -8,6 +8,8 @@ class File
   extend Windows::File::Structs
   extend Windows::File::Functions
 
+  WIN32_FILE_VERSION = '0.7.0'
+
   ## SINGLETON METHODS
 
   def self.attributes(file)
@@ -142,6 +144,227 @@ class File
       end
     ensure
       CloseHandle(handle)
+    end
+
+    self
+  end
+
+  # Sets the hidden attribute to true or false.  Setting this attribute to
+  # true means that the file is not included in an ordinary directory listing.
+  #
+  def hidden=(bool)
+    wide_path  = self.path.wincode
+    attributes = GetFileAttributesW(wide_path)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    if bool
+      attributes |= FILE_ATTRIBUTE_HIDDEN;
+    else
+      attributes &= ~FILE_ATTRIBUTE_HIDDEN;
+    end
+
+    if SetFileAttributesW(wide_path, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  # Sets the 'indexed' attribute to true or false.  Setting this to
+  # false means that the file will not be indexed by the content indexing
+  # service.
+  #
+  def indexed=(bool)
+    wide_path  = self.path.wincode
+    attributes = GetFileAttributesW(wide_path)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    if bool
+      attributes &= ~FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;
+    else
+      attributes |= FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;
+    end
+
+    if SetFileAttributes(wide_path, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  alias :content_indexed= :indexed=
+
+    # Sets the normal attribute. Note that only 'true' is a valid argument,
+  # which has the effect of removing most other attributes.  Attempting to
+  # pass any value except true will raise an ArgumentError.
+  #
+  def normal=(bool)
+    unless bool
+      raise ArgumentError, "only 'true' may be passed as an argument"
+    end
+
+    if SetFileAttributesW(self.path.wincdoe, FILE_ATTRIBUTE_NORMAL) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  # Sets whether or not a file is online or not.  Setting this to false means
+	# that the data of the file is not immediately available. This attribute
+	# indicates that the file data has been physically moved to offline storage.
+	# This attribute is used by Remote Storage, the hierarchical storage
+	# management software.
+  #
+	# Applications should not arbitrarily change this attribute.
+  #
+  def offline=(bool)
+    wide_path  = self.path.wincode
+    attributes = GetFileAttributesW(wide_path)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    if bool
+      attributes |= FILE_ATTRIBUTE_OFFLINE;
+    else
+      attributes &= ~FILE_ATTRIBUTE_OFFLINE;
+    end
+
+    if SetFileAttributesW(wide_path, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  # Sets the readonly attribute.  If set to true the the file or directory is
+  # readonly. Applications can read the file but cannot write to it or delete
+  # it. In the case of a directory, applications cannot delete it.
+  #
+  def readonly=(bool)
+    wide_path  = self.path.wincode
+    attributes = GetFileAttributesW(wide_path)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    if bool
+      attributes |= FILE_ATTRIBUTE_READONLY;
+    else
+      attributes &= ~FILE_ATTRIBUTE_READONLY;
+    end
+
+    if SetFileAttributesW(wide_path, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  # Sets the file to a sparse (usually image) file.  Note that you cannot
+  # remove the sparse property from a file.
+  #
+  def sparse=(bool)
+    unless bool
+      warn 'cannot remove sparse property from a file - operation ignored'
+      return
+    end
+
+    bytes = FFI::MemoryPointer.new(:ulong)
+
+    handle = CreateFileW(
+      self.path.wincode,
+      FILE_READ_DATA | FILE_WRITE_DATA,
+      FILE_SHARE_READ | FILE_SHARE_WRITE,
+      0,
+      OPEN_EXISTING,
+      FSCTL_SET_SPARSE(),
+      0
+    )
+
+    if handle == INVALID_HANDLE_VALUE
+      raise SystemCallError.new("CreateFile", FFI.errno)
+    end
+
+    begin
+      bool = DeviceIoControl(
+        handle,
+        FSCTL_SET_SPARSE(),
+        nil,
+        0,
+        nil,
+        0,
+        bytes,
+        nil
+      )
+
+      unless bool == 0
+        raise SystemCallError.new("DeviceIoControl", FFI.errno)
+      end
+    ensure
+      CloseHandle(handle)
+    end
+
+    self
+  end
+
+  # Set whether or not the file is a system file.  A system file is a file
+	# that is part of the operating system or is used exclusively by it.
+  #
+  def system=(bool)
+    wide_path  = self.path.wincode
+    attributes = GetFileAttributesW(wide_path)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    if bool
+      attributes |= FILE_ATTRIBUTE_SYSTEM;
+    else
+      attributes &= ~FILE_ATTRIBUTE_SYSTEM;
+    end
+
+    if SetFileAttributesW(wide_path, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
+    end
+
+    self
+  end
+
+  # Sets whether or not the file is being used for temporary storage.
+  #
+  # File systems avoid writing data back to mass storage if sufficient cache
+  # memory is available, because often the application deletes the temporary
+  # file shortly after the handle is closed. In that case, the system can
+  # entirely avoid writing the data. Otherwise, the data will be written
+  # after the handle is closed.
+  #
+  def temporary=(bool)
+    wide_path  = self.path.wincode
+    attributes = GetFileAttributesW(wide_path)
+
+    if attributes == INVALID_FILE_ATTRIBUTES
+      raise SystemCallError.new("GetFileAttributes", FFI.errno)
+    end
+
+    if bool
+      attributes |= FILE_ATTRIBUTE_TEMPORARY;
+    else
+      attributes &= ~FILE_ATTRIBUTE_TEMPORARY;
+    end
+
+    if SetFileAttributesW(wide_path, attributes) == 0
+      raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
     self

@@ -19,6 +19,10 @@ module Windows
       def FSCTL_SET_COMPRESSION
          CTL_CODE(9, 16, 0, 3)
       end
+
+      def FSCTL_SET_SPARSE
+         CTL_CODE(9, 49, 0, 0)
+      end
     end
   end
 end
