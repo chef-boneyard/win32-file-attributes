@@ -99,6 +99,14 @@ class File
     check_for_attribute(file, FILE_ATTRIBUTE_REPARSE_POINT)
   end
 
+  def self.readonly?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_READONLY)
+  end
+
+  class << self
+    alias read_only? readonly?
+  end
+
   ## INSTANCE METHODS
 
   def archive=(bool)

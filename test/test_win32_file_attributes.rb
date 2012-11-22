@@ -115,28 +115,34 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_raises(ArgumentError){ File.reparse_point?(@@file, 'foo') }
   end
 
+  test "readonly? singleton method basic functionality" do
+    assert_respond_to(File, :readonly?)
+    assert_nothing_raised{ File.readonly?(@@file) }
+  end
+
+  test "readonly? singleton method returns expected result" do
+    assert_false(File.readonly?(@@file))
+  end
+
+  test "readonly? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.read_only? }
+    assert_raises(ArgumentError){ File.read_only?(@@file, 'foo') }
+  end
+
+  test "read_only? is an alias for readonly?" do
+    assert_respond_to(File, :read_only?)
+    assert_alias_method(File, :read_only?, :readonly?)
+  end
+
+  test "readonly? instance method basic functionality" do
+    assert_respond_to(@fh, :readonly=)
+    assert_nothing_raised{ @fh.readonly = true }
+  end
+
+  test "readonly? instance method returns expected value" do
+    assert_false(File.readonly?(@@file))
+  end
 =begin
-   def test_readonly
-      assert_respond_to(File, :readonly?)
-      assert_nothing_raised{ File.readonly?(@@file) }
-      assert_equal(false, File.readonly?(@@file))
-   end
-
-   def test_read_only_alias
-      assert_respond_to(File, :read_only?)
-      assert_equal(true, File.method(:readonly?) == File.method(:read_only?))
-   end
-
-   def test_readonly_instance
-      assert_respond_to(@fh, :readonly=)
-      assert_nothing_raised{ @fh.readonly = true }
-      assert(File.readonly?(@@file))
-   end
-
-   def test_read_only_expected_errors
-      assert_raises(ArgumentError){ File.read_only? }
-      assert_raises(ArgumentError){ File.read_only?(@@file, 'foo') }
-   end
 
    def test_offline
       assert_respond_to(File, :offline?)
