@@ -83,6 +83,10 @@ class File
     self
   end
 
+  def self.normal?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_NORMAL)
+  end
+
   def self.offline?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_OFFLINE)
   end
@@ -238,7 +242,7 @@ class File
       raise ArgumentError, "only 'true' may be passed as an argument"
     end
 
-    if SetFileAttributesW(self.path.wincdoe, FILE_ATTRIBUTE_NORMAL) == 0
+    if SetFileAttributesW(self.path.wincode, FILE_ATTRIBUTE_NORMAL) == 0
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 

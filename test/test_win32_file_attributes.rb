@@ -169,26 +169,33 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     @fh.offline = true
     assert_true(File.offline?(@@file))
   end
+
+  test "normal? singleton method basic functionality" do
+    assert_respond_to(File, :normal?)
+    assert_nothing_raised{ File.normal?(@@file) }
+  end
+
+  test "normal? singleton method returns expected results" do
+    assert_false(File.normal?(@@file))
+    @fh.normal = true
+    assert_true(File.normal?(@@file))
+  end
+
+  test "normal? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.normal? }
+    assert_raises(ArgumentError){ File.normal?(@@file, 'foo') }
+  end
+
+  test "normal? instance method basic functionality" do
+    assert_respond_to(@fh, :normal=)
+    assert_nothing_raised{ @fh.normal = true }
+  end
+
+  test "normal? instance method setter does not accept false" do
+    assert_raises(ArgumentError){ @fh.normal = false }
+  end
+
 =begin
-
-   def test_normal
-      assert_respond_to(File, :normal?)
-      assert_nothing_raised{ File.normal?(@@file) }
-      assert_equal(false, File.normal?(@@file))
-   end
-
-   def test_normal_instance
-      assert_respond_to(@fh, :normal=)
-      assert_nothing_raised{ @fh.normal = true }
-      assert(File.normal?(@@file))
-   end
-
-   def test_normal_expected_errors
-      assert_raises(ArgumentError){ File.normal? }
-      assert_raises(ArgumentError){ File.normal?(@@file, 'foo') }
-      assert_raises(ArgumentError){ @fh.normal = false }
-   end
-
    def test_hidden
       assert_respond_to(File, :hidden?)
       assert_nothing_raised{ File.hidden?(@@file) }
@@ -319,4 +326,3 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     @@file = nil
   end
 end
-
