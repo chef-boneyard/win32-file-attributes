@@ -195,35 +195,42 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_raises(ArgumentError){ @fh.normal = false }
   end
 
+  test "hidden? singleton method basic functionality" do
+    assert_respond_to(File, :hidden?)
+    assert_nothing_raised{ File.hidden?(@@file) }
+  end
+
+  test "hidden? singleton method returns the expected result" do
+    assert_false(File.hidden?(@@file))
+    @fh.hidden = true
+    assert_true(File.hidden?(@@file))
+  end
+
+  test "hidden? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.hidden? }
+    assert_raises(ArgumentError){ File.hidden?(@@file, 'foo') }
+  end
+
+  test "hidden? instance method basic functionality" do
+    assert_respond_to(@fh, :hidden=)
+    assert_nothing_raised{ @fh.hidden = true }
+  end
+
+  test "encrypted? singleton method basic functionality" do
+    assert_respond_to(File, :encrypted?)
+    assert_nothing_raised{ File.encrypted?(@@file) }
+  end
+
+  test "encrypted? singleton method returns the expected result" do
+    assert_false(File.encrypted?(@@file))
+  end
+
+  test "encrypted? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.encrypted? }
+    assert_raises(ArgumentError){ File.encrypted?(@@file, 'foo') }
+  end
+
 =begin
-   def test_hidden
-      assert_respond_to(File, :hidden?)
-      assert_nothing_raised{ File.hidden?(@@file) }
-      assert_equal(false, File.hidden?(@@file))
-   end
-
-   def test_hidden_instance
-      assert_respond_to(@fh, :hidden=)
-      assert_nothing_raised{ @fh.hidden = true }
-      assert(File.hidden?(@@file))
-   end
-
-   def test_hidden_expected_errors
-      assert_raises(ArgumentError){ File.hidden? }
-      assert_raises(ArgumentError){ File.hidden?(@@file, 'foo') }
-   end
-
-   def test_encrypted
-      assert_respond_to(File, :encrypted?)
-      assert_nothing_raised{ File.encrypted?(@@file) }
-      assert_equal(false, File.encrypted?(@@file))
-   end
-
-   def test_encrypted_expected_errors
-      assert_raises(ArgumentError){ File.encrypted? }
-      assert_raises(ArgumentError){ File.encrypted?(@@file, 'foo') }
-   end
-
    def test_indexed
       assert_respond_to(File, :indexed?)
       assert_nothing_raised{ File.indexed?(@@file) }

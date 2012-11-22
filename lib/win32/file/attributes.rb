@@ -83,6 +83,14 @@ class File
     self
   end
 
+  def self.encrypted?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_ENCRYPTED)
+  end
+
+  def self.hidden?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_HIDDEN)
+  end
+
   def self.normal?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_NORMAL)
   end
