@@ -95,6 +95,10 @@ class File
     check_for_attribute(file, FILE_ATTRIBUTE_SYSTEM)
   end
 
+  def self.reparse_point?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_REPARSE_POINT)
+  end
+
   ## INSTANCE METHODS
 
   def archive=(bool)

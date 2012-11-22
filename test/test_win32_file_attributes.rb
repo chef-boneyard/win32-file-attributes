@@ -101,18 +101,21 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_nothing_raised{ @fh.sparse= false }
   end
 
+  test "reparse_point? singleton method basic functionality" do
+    assert_respond_to(File, :reparse_point?)
+    assert_nothing_raised{ File.reparse_point?(@@file) }
+  end
+
+  test "reparse_point? singleton method returns the expected value" do
+    assert_false(File.reparse_point?(@@file))
+  end
+
+  test "reparse_point? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.reparse_point? }
+    assert_raises(ArgumentError){ File.reparse_point?(@@file, 'foo') }
+  end
+
 =begin
-   def test_reparse_point
-      assert_respond_to(File, :reparse_point?)
-      assert_nothing_raised{ File.reparse_point?(@@file) }
-      assert_equal(false, File.reparse_point?(@@file))
-   end
-
-   def test_reparse_point_expected_errors
-      assert_raises(ArgumentError){ File.reparse_point? }
-      assert_raises(ArgumentError){ File.reparse_point?(@@file, 'foo') }
-   end
-
    def test_readonly
       assert_respond_to(File, :readonly?)
       assert_nothing_raised{ File.readonly?(@@file) }
