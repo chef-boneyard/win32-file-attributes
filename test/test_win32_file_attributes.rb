@@ -141,25 +141,35 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
 
   test "readonly? instance method returns expected value" do
     assert_false(File.readonly?(@@file))
+    @fh.readonly = true
+    assert_true(File.readonly?(@@file))
+  end
+
+  test "offline? singleton method basic functionality" do
+    assert_respond_to(File, :offline?)
+    assert_nothing_raised{ File.offline?(@@file) }
+  end
+
+  test "offline? singleton method returns expected result" do
+    assert_false(File.offline?(@@file))
+  end
+
+  test "offline? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.offline? }
+    assert_raises(ArgumentError){ File.offline?(@@file, 'foo') }
+  end
+
+  test "offline? instance method basic functionality" do
+    assert_respond_to(@fh, :offline=)
+    assert_nothing_raised{ @fh.offline =  true }
+  end
+
+  test "offline? instance method returns expected value" do
+    assert_false(File.offline?(@@file))
+    @fh.offline = true
+    assert_true(File.offline?(@@file))
   end
 =begin
-
-   def test_offline
-      assert_respond_to(File, :offline?)
-      assert_nothing_raised{ File.offline?(@@file) }
-      assert_equal(false, File.offline?(@@file))
-   end
-
-   def test_offline_instance
-      assert_respond_to(@fh, :offline=)
-      assert_nothing_raised{ @fh.offline =  true }
-      assert(File.offline?(@@file))
-   end
-
-   def test_offline_expected_errors
-      assert_raises(ArgumentError){ File.offline? }
-      assert_raises(ArgumentError){ File.offline?(@@file, 'foo') }
-   end
 
    def test_normal
       assert_respond_to(File, :normal?)

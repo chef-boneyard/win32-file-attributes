@@ -83,8 +83,16 @@ class File
     self
   end
 
-  def self.temporary?(file)
-    check_for_attribute(file, FILE_ATTRIBUTE_TEMPORARY)
+  def self.offline?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_OFFLINE)
+  end
+
+  def self.readonly?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_READONLY)
+  end
+
+  def self.reparse_point?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_REPARSE_POINT)
   end
 
   def self.sparse?(file)
@@ -95,12 +103,8 @@ class File
     check_for_attribute(file, FILE_ATTRIBUTE_SYSTEM)
   end
 
-  def self.reparse_point?(file)
-    check_for_attribute(file, FILE_ATTRIBUTE_REPARSE_POINT)
-  end
-
-  def self.readonly?(file)
-    check_for_attribute(file, FILE_ATTRIBUTE_READONLY)
+  def self.temporary?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_TEMPORARY)
   end
 
   class << self
