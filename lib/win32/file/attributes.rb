@@ -91,6 +91,10 @@ class File
     check_for_attribute(file, FILE_ATTRIBUTE_HIDDEN)
   end
 
+  def self.indexed?(file)
+    !check_for_attribute(file, FILE_ATTRIBUTE_NOT_CONTENT_INDEXED)
+  end
+
   def self.normal?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_NORMAL)
   end
@@ -121,6 +125,7 @@ class File
 
   class << self
     alias read_only? readonly?
+    alias content_indexed? indexed?
   end
 
   ## INSTANCE METHODS
@@ -232,7 +237,7 @@ class File
       attributes |= FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;
     end
 
-    if SetFileAttributes(wide_path, attributes) == 0
+    if SetFileAttributesW(wide_path, attributes) == 0
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 

@@ -230,28 +230,38 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_raises(ArgumentError){ File.encrypted?(@@file, 'foo') }
   end
 
+  test "indexed? singleton method basic functionality" do
+    assert_respond_to(File, :indexed?)
+    assert_nothing_raised{ File.indexed?(@@file) }
+  end
+
+  test "indexed? singleton method returns the expected results" do
+    assert_true(File.indexed?(@@file))
+    @fh.indexed = false
+    assert_false(File.indexed?(@@file))
+  end
+
+  test "content_indexed? is an alias for indexed?" do
+    assert_respond_to(File, :content_indexed?)
+    assert_alias_method(File, :content_indexed?, :indexed?)
+  end
+
+  test "indexed? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.indexed? }
+    assert_raises(ArgumentError){ File.indexed?(@@file, 'foo') }
+  end
+
+  test "indexed? instance method basic functionality" do
+    assert_respond_to(@fh, :indexed=)
+    assert_nothing_raised{ @fh.indexed = true }
+  end
+
+  test "indexed? instance method returns expected method" do
+    assert_true(File.indexed?(@@file))
+    @fh.indexed = false
+    assert_false(File.indexed?(@@file))
+  end
 =begin
-   def test_indexed
-      assert_respond_to(File, :indexed?)
-      assert_nothing_raised{ File.indexed?(@@file) }
-      assert_equal(true, File.indexed?(@@file))
-   end
-
-   def test_content_indexed_alias
-      assert_respond_to(File, :content_indexed?)
-      assert(File.method(:content_indexed?) == File.method(:indexed?))
-   end
-
-   def test_indexed_instance
-      assert_respond_to(@fh, :indexed=)
-      assert_nothing_raised{ @fh.indexed = true }
-      assert(File.indexed?(@@file))
-   end
-
-   def test_indexed_expected_errors
-      assert_raises(ArgumentError){ File.indexed? }
-      assert_raises(ArgumentError){ File.indexed?(@@file, 'foo') }
-   end
 
    def test_compressed
       assert_respond_to(File, :compressed?)
