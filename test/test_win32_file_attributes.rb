@@ -290,25 +290,29 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_nothing_raised{ @fh.compressed = false }
     assert_false(File.compressed?(@@file))
   end
+
+  test "archive? singleton method basic functionality" do
+    assert_respond_to(File, :archive?)
+    assert_nothing_raised{ File.archive?(@@file) }
+  end
+
+  test "archive? singleton method returns the expected results" do
+    assert_true(File.archive?(@@file))
+    @fh.archive = false
+    assert_false(File.archive?(@@file))
+  end
+
+  test "archive? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.archive? }
+    assert_raises(ArgumentError){ File.archive?(@@file, 'foo') }
+  end
+
+  test "archive instance method setter basic functionality" do
+    assert_respond_to(@fh, :archive=)
+    assert_nothing_raised{ @fh.archive = false }
+  end
+
 =begin
-
-   def test_archive
-      assert_respond_to(File, :archive?)
-      assert_nothing_raised{ File.archive?(@@file) }
-      assert_equal(true, File.archive?(@@file))
-   end
-
-   def test_archive_instance
-      assert_respond_to(@fh, :archive=)
-      assert_nothing_raised{ @fh.archive = false }
-      assert_equal(false, File.archive?(@@file))
-   end
-
-   def test_archive_expected_errors
-      assert_raises(ArgumentError){ File.archive? }
-      assert_raises(ArgumentError){ File.archive?(@@file, 'foo') }
-   end
-
    def test_attributes
       assert_respond_to(File, :attributes)
       assert_kind_of(Array, File.attributes(@@file))
