@@ -134,6 +134,8 @@ class File
   class << self
     alias read_only? readonly?
     alias content_indexed? indexed?
+    alias set_attr set_attributes
+    alias unset_attr remove_attributes
   end
 
   ## INSTANCE METHODS

@@ -312,35 +312,45 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_nothing_raised{ @fh.archive = false }
   end
 
-=begin
-   def test_attributes
-      assert_respond_to(File, :attributes)
-      assert_kind_of(Array, File.attributes(@@file))
-      assert_equal(['archive', 'indexed'], File.attributes(@@file))
-   end
+  test "attributes singleton method basic functionality" do
+    assert_respond_to(File, :attributes)
+    assert_kind_of(Array, File.attributes(@@file))
+  end
 
-   def test_set_attributes
-      assert_respond_to(File, :set_attributes)
-      assert_nothing_raised{ File.set_attributes(@@file, File::HIDDEN) }
-      assert(File.hidden?(@@file))
-   end
+  test "attributes singleton method returns expected results" do
+    assert_equal(['archive', 'indexed'], File.attributes(@@file))
+  end
 
-   def test_set_attr_alias
-      assert_respond_to(File, :set_attr)
-      assert(File.method(:set_attr) == File.method(:set_attributes))
-   end
+  test "set_attributes singleton method basic functionality" do
+    assert_respond_to(File, :set_attributes)
+    assert_nothing_raised{ File.set_attributes(@@file, File::FILE_ATTRIBUTE_HIDDEN) }
+  end
 
-   def test_remove_attributes
-      assert_respond_to(File, :remove_attributes)
-      assert_nothing_raised{ File.remove_attributes(@@file, File::ARCHIVE) }
-      assert_equal(false, File.archive?(@@file))
-   end
+  test "set_attributes singleton method works as expected" do
+    assert_nothing_raised{ File.set_attributes(@@file, File::FILE_ATTRIBUTE_HIDDEN) }
+    assert_true(File.attributes(@@file).include?('hidden'))
+  end
 
-   def test_unset_attr_alias
-      assert_respond_to(File, :unset_attr)
-      assert(File.method(:unset_attr) == File.method(:remove_attributes))
-   end
-=end
+  test "set_attr is an alias for set_attributes" do
+    assert_respond_to(File, :set_attr)
+    assert_alias_method(File, :set_attr, :set_attributes)
+  end
+
+  test "remove_attributes singleton method basic functionality" do
+    assert_respond_to(File, :remove_attributes)
+    assert_nothing_raised{ File.remove_attributes(@@file, File::FILE_ATTRIBUTE_ARCHIVE) }
+  end
+
+  test "remove_attributes works as expected" do
+    assert_true(File.archive?(@@file))
+    assert_nothing_raised{ File.remove_attributes(@@file, File::FILE_ATTRIBUTE_ARCHIVE) }
+    assert_false(File.archive?(@@file))
+  end
+
+  test "unset_attr is an alias for remove_attributes" do
+    assert_respond_to(File, :unset_attr)
+    assert_alias_method(File, :unset_attr, :remove_attributes)
+  end
 
   def teardown
     SetFileAttributes(@@file, @attr)
