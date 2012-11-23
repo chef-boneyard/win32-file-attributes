@@ -261,31 +261,36 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     @fh.indexed = false
     assert_false(File.indexed?(@@file))
   end
+
+  test "compressed? singleton method basic functionality" do
+    assert_respond_to(File, :compressed?)
+    assert_nothing_raised{ File.compressed?(@@file) }
+  end
+
+  test "compressed? singleton method returns the expected result" do
+    assert_false(File.compressed?(@@file))
+  end
+
+  test "compressed instance method setter basic functionality" do
+    assert_respond_to(@fh, :compressed=)
+    assert_false(File.compressed?(@@file))
+  end
+
+  test "compressed? singleton method requires a single argument" do
+    assert_raises(ArgumentError){ File.compressed? }
+    assert_raises(ArgumentError){ File.compressed?(@@file, 'foo') }
+  end
+
+  # We have to explicitly reset the compressed attribute to false as
+  # the last of these assertions.
+
+  test "compressed instance method setter works as expected" do
+    assert_nothing_raised{ @fh.compressed = true }
+    assert_true(File.compressed?(@@file))
+    assert_nothing_raised{ @fh.compressed = false }
+    assert_false(File.compressed?(@@file))
+  end
 =begin
-
-   def test_compressed
-      assert_respond_to(File, :compressed?)
-      assert_nothing_raised{ File.compressed?(@@file) }
-      assert_equal(false, File.compressed?(@@file))
-   end
-
-   # We have to explicitly reset the compressed attribute to false as
-   # the last of these assertions.
-   def test_compressed_instance
-      assert_respond_to(@fh, :compressed=)
-      assert_equal(false, File.compressed?(@@file))
-
-      assert_nothing_raised{ @fh.compressed = true }
-      assert_equal(true, File.compressed?(@@file))
-
-      assert_nothing_raised{ @fh.compressed = false }
-      assert_equal(false, File.compressed?(@@file))
-   end
-
-   def test_compressed_expected_errors
-      assert_raises(ArgumentError){ File.compressed? }
-      assert_raises(ArgumentError){ File.compressed?(@@file, 'foo') }
-   end
 
    def test_archive
       assert_respond_to(File, :archive?)

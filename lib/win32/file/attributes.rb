@@ -83,6 +83,10 @@ class File
     self
   end
 
+  def self.compressed?(file)
+    check_for_attribute(file, FILE_ATTRIBUTE_COMPRESSED)
+  end
+
   def self.encrypted?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_ENCRYPTED)
   end
