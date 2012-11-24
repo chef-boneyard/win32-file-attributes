@@ -12,6 +12,43 @@ class File
   # The version of the win32-file library
   WIN32_FILE_VERSION = '0.7.0'
 
+  ## ABBREVIATED ATTRIBUTE CONSTANTS
+
+  # The file or directory is an archive. Typically used to mark files for
+  # backup or removal.
+  ARCHIVE = FILE_ATTRIBUTE_ARCHIVE
+
+  # The file or directory is encrypted. For a file, this means that all
+  # data in the file is encrypted. For a directory, this means that
+  # encryption is # the default for newly created files and subdirectories.
+  COMPRESSED = FILE_ATTRIBUTE_COMPRESSED
+
+  # The file is hidden. Not included in an ordinary directory listing.
+  HIDDEN = FILE_ATTRIBUTE_HIDDEN
+
+  # A file that does not have any other attributes set.
+  NORMAL = FILE_ATTRIBUTE_NORMAL
+
+  # The data of a file is not immediately available. This attribute indicates
+  # that file data is physically moved to offline storage.
+  OFFLINE = FILE_ATTRIBUTE_OFFLINE
+
+  # The file is read only. Apps can read it, but not write to it or delete it.
+  READONLY = FILE_ATTRIBUTE_READONLY
+
+  # The file is part of or used exclusively by an operating system.
+  SYSTEM = FILE_ATTRIBUTE_SYSTEM
+
+  # The file is being used for temporary storage.
+  TEMPORARY = FILE_ATTRIBUTE_TEMPORARY
+
+  # The file or directory is to be indexed by the content indexing service.
+  # Note that we have inverted the traditional definition.
+  INDEXED = 0x0002000
+
+  # Synonym for File::INDEXED.
+  CONTENT_INDEXED = INDEXED
+
   ## SINGLETON METHODS
 
   # Returns an array of strings indicating the attributes for that file.

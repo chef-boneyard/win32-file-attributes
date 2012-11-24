@@ -352,6 +352,18 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
     assert_alias_method(File, :unset_attr, :remove_attributes)
   end
 
+  test "shorthand constants are defined" do
+    assert_not_nil(File::ARCHIVE)
+    assert_not_nil(File::HIDDEN)
+    assert_not_nil(File::NORMAL)
+    assert_not_nil(File::INDEXED)
+    assert_not_nil(File::OFFLINE)
+    assert_not_nil(File::READONLY)
+    assert_not_nil(File::SYSTEM)
+    assert_not_nil(File::TEMPORARY)
+    assert_not_nil(File::CONTENT_INDEXED) # alias for INDEXED
+  end
+
   def teardown
     SetFileAttributes(@@file, @attr)
     @fh.close
