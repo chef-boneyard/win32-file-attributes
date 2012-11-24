@@ -9,10 +9,28 @@ class File
   extend Windows::File::Structs
   extend Windows::File::Functions
 
+  # The version of the win32-file library
   WIN32_FILE_VERSION = '0.7.0'
 
   ## SINGLETON METHODS
 
+  # Returns an array of strings indicating the attributes for that file.
+  # The possible values are:
+  #
+  # archive
+  # compressed
+  # directory
+  # encrypted
+  # hidden
+  # indexed
+  # normal
+  # offline
+  # readonly
+  # reparse_point
+  # sparse
+  # system
+  # temporary
+  #
   def self.attributes(file)
     attributes = GetFileAttributesW(file.wincode)
 
@@ -83,50 +101,102 @@ class File
     self
   end
 
+  # Returns whether or not the file or directory is an archive file or
+  # directory. Applications typically use this attribute to mark files
+  # for backup or removal.
+  #
   def self.archive?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_COMPRESSED)
   end
 
+  # Returns whether or not the file or directory is compressed. For a file,
+  # this means that all of the data in the file is compressed. For a directory,
+  # this means that compression is the default for newly created files and
+  # subdirectories.
+  #
   def self.compressed?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_COMPRESSED)
   end
 
+  # Returns whether or not the file or directory is encrypted. For a file,
+  # this means that all data in the file is encrypted. For a directory, this
+  # means that encryption is the default for newly created files and
+  # subdirectories.
+  #
   def self.encrypted?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_ENCRYPTED)
   end
 
+  # Returns whether or not the file or directory is hidden. A hidden file
+  # does not show up in an ordinary directory listing.
+  #
   def self.hidden?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_HIDDEN)
   end
 
+  # Returns whether or not the file or directory has been indexed by
+  # the content indexing service.
+  #
   def self.indexed?(file)
     !check_for_attribute(file, FILE_ATTRIBUTE_NOT_CONTENT_INDEXED)
   end
 
+  # Returns whether or not the file is a normal file or directory. A normal
+  # file or directory does not have any other attributes set.
+  #
   def self.normal?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_NORMAL)
   end
 
+  # Returns whether or not the data of a file is available immediately.
+  # If true it indicates that the file data is physically moved to offline
+  # storage.
+  #
   def self.offline?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_OFFLINE)
   end
 
+  # Returns whether or not the file is read-only. If a file is read-only then
+  # applications can read the file, but cannot write to it or delete it.
+  #
+  # Note that this attribute is not honored on directories.
+  #
   def self.readonly?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_READONLY)
   end
 
+  # Returns true if the file or directory has an associated reparse point. A
+  # reparse point is a collection of user defined data associated with a file
+  # or directory.  For more on reparse points, search
+  # http://msdn.microsoft.com.
+  #
   def self.reparse_point?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_REPARSE_POINT)
   end
 
+  # Returns whether or not the file is a sparse file. A sparse file is a
+  # file in which much of the data is zeros, typically image files.
+  #
   def self.sparse?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_SPARSE_FILE)
   end
 
+  # Returns whether or not the file or directory is a system file. A system
+  # file is a file that is part of the operating system or is used exclusively
+  # by the operating system.
+  #
   def self.system?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_SYSTEM)
   end
 
+  # Returns whether or not the file is being used for temporary storage.
+  #
+  # File systems avoid writing data back to mass storage if sufficient cache
+  # memory is available, because often the application deletes the temporary
+  # file shortly after the handle is closed. In that case, the system can
+  # entirely avoid writing the data. Otherwise, the data will be written after
+  # the handle is closed.
+  #
   def self.temporary?(file)
     check_for_attribute(file, FILE_ATTRIBUTE_TEMPORARY)
   end
