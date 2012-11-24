@@ -143,7 +143,7 @@ class File
   # for backup or removal.
   #
   def self.archive?(file)
-    check_for_attribute(file, FILE_ATTRIBUTE_COMPRESSED)
+    check_for_attribute(file, FILE_ATTRIBUTE_ARCHIVE)
   end
 
   # Returns whether or not the file or directory is compressed. For a file,
