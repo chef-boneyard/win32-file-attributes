@@ -210,6 +210,9 @@ class File
 
   ## INSTANCE METHODS
 
+  # Sets whether or not the file is an archive file. Applications typically
+  # use this attribute to mark files for backup or removal.
+  #
   def archive=(bool)
     wide_path  = self.path.wincode
     attributes = GetFileAttributesW(wide_path)
@@ -231,6 +234,10 @@ class File
     self
   end
 
+  # Sets whether or not the file is a compressed file. For a file, this means
+  # that all of the data in the file is compressed. For a directory, this means
+  # that compression is the default for newly created files and subdirectories.
+  #
   def compressed=(bool)
     in_buf = FFI::MemoryPointer.new(:ulong)
     bytes  = FFI::MemoryPointer.new(:ulong)
@@ -498,6 +505,8 @@ class File
 
   private
 
+  # Convenience method used internally for the various boolean singleton methods.
+  #
   def self.check_for_attribute(file, attribute)
     attributes = GetFileAttributesW(file.wincode)
 
