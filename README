@@ -1,4 +1,4 @@
-= Description
+== Description
   Additional methods for the File class that relate to file properties
   on the Microsoft Windows operating system.
 
@@ -21,7 +21,7 @@
   testing and maintenance.
 
   Otherwise, the only difference is that this library uses FFI instead
-  of win32-api.
+  of win32-api. This also means that it works with JRuby.
 
 == Known issues or bugs
   None that I'm aware of.
