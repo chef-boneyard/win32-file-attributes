@@ -27,7 +27,7 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
   end
 
   test "version is set to expected value" do
-    assert_equal('0.7.0', File::WIN32_FILE_VERSION)
+    assert_equal('1.0.0', File::WIN32_FILE_ATTRIBUTE_VERSION)
   end
 
   test "temporary? singleton method basic functionality" do
