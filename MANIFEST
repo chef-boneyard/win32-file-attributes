@@ -1,0 +1,10 @@
+* CHANGES
+* MANIFEST
+* Rakefile
+* README
+* win32-file-attributes.gemspec
+* lib/win32/file/attributes.rb
+* lib/win32/file/windows/constants.rb
+* lib/win32/file/windows/functions.rb
+* lib/win32/file/windows/structs.rb
+* test/test_win32_file_attributes.rb
