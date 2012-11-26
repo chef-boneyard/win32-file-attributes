@@ -12,8 +12,16 @@
 
   require 'win32/file/attributes
 
-  p File.hidden?(file)
-  p File.attributes(file)
+  p File.hidden?(file)    # => false
+  p File.attributes(file) # => ['archive', 'indexed']
+
+== Notes
+  If you have the win32-file gem already installed then you do not need this
+  gem. This library was split out from the win32-file gem in order to ease
+  testing and maintenance.
+
+  Otherwise, the only difference is that this library uses FFI instead
+  of win32-api.
 
 == Known issues or bugs
   None that I'm aware of.
