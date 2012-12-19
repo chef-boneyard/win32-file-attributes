@@ -1,2 +1,5 @@
+= 1.0.1 - ???
+* Added some tests for constants.
+
 = 1.0.0 - 26-Nov-2012
 * Initial release as an independent library.
