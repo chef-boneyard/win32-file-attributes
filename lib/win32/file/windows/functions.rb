@@ -4,13 +4,16 @@ module Windows
   module File
     module Functions
       extend FFI::Library
+      typedef :ulong, :dword
+      typedef :uintptr_t, :handle
+
       ffi_lib :kernel32
 
-      attach_function :CloseHandle, [:ulong], :bool
-      attach_function :CreateFileW, [:buffer_in, :ulong, :ulong, :pointer, :ulong, :ulong, :ulong], :ulong
-      attach_function :DeviceIoControl, [:ulong, :ulong, :pointer, :ulong, :pointer, :ulong, :pointer, :pointer], :bool
-      attach_function :GetFileAttributesW, [:buffer_in], :ulong
-      attach_function :SetFileAttributesW, [:buffer_in, :ulong], :ulong
+      attach_function :CloseHandle, [:handle], :bool
+      attach_function :CreateFileW, [:buffer_in, :dword, :dword, :pointer, :dword, :dword, :handle], :handle
+      attach_function :DeviceIoControl, [:handle, :dword, :pointer, :dword, :pointer, :dword, :pointer, :pointer], :bool
+      attach_function :GetFileAttributesW, [:buffer_in], :dword
+      attach_function :SetFileAttributesW, [:buffer_in, :dword], :bool
 
       def CTL_CODE(device, function, method, access)
          ((device) << 16) | ((access) << 14) | ((function) << 2) | (method)

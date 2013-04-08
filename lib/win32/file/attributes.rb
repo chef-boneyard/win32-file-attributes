@@ -10,7 +10,7 @@ class File
   extend Windows::File::Functions
 
   # The version of the win32-file library
-  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.0'
+  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.1'
 
   ## ABBREVIATED ATTRIBUTE CONSTANTS
 
@@ -112,7 +112,7 @@ class File
 
     attributes |= flags
 
-    if SetFileAttributesW(wfile, attributes) == 0
+    unless SetFileAttributesW(wfile, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -131,7 +131,7 @@ class File
 
     attributes &= ~flags
 
-    if SetFileAttributesW(wfile, attributes) == 0
+    unless SetFileAttributesW(wfile, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -264,7 +264,7 @@ class File
       attributes &= ~FILE_ATTRIBUTE_ARCHIVE;
     end
 
-    if SetFileAttributesW(wide_path, attributes) == 0
+    unless SetFileAttributesW(wide_path, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -336,7 +336,7 @@ class File
       attributes &= ~FILE_ATTRIBUTE_HIDDEN;
     end
 
-    if SetFileAttributesW(wide_path, attributes) == 0
+    unless SetFileAttributesW(wide_path, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -361,7 +361,7 @@ class File
       attributes |= FILE_ATTRIBUTE_NOT_CONTENT_INDEXED;
     end
 
-    if SetFileAttributesW(wide_path, attributes) == 0
+    unless SetFileAttributesW(wide_path, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -379,7 +379,7 @@ class File
       raise ArgumentError, "only 'true' may be passed as an argument"
     end
 
-    if SetFileAttributesW(self.path.wincode, FILE_ATTRIBUTE_NORMAL) == 0
+    unless SetFileAttributesW(self.path.wincode, FILE_ATTRIBUTE_NORMAL)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -408,7 +408,7 @@ class File
       attributes &= ~FILE_ATTRIBUTE_OFFLINE;
     end
 
-    if SetFileAttributesW(wide_path, attributes) == 0
+    unless SetFileAttributesW(wide_path, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -433,7 +433,7 @@ class File
       attributes &= ~FILE_ATTRIBUTE_READONLY;
     end
 
-    if SetFileAttributesW(wide_path, attributes) == 0
+    unless SetFileAttributesW(wide_path, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -504,7 +504,7 @@ class File
       attributes &= ~FILE_ATTRIBUTE_SYSTEM;
     end
 
-    if SetFileAttributesW(wide_path, attributes) == 0
+    unless SetFileAttributesW(wide_path, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 
@@ -533,7 +533,7 @@ class File
       attributes &= ~FILE_ATTRIBUTE_TEMPORARY;
     end
 
-    if SetFileAttributesW(wide_path, attributes) == 0
+    unless SetFileAttributesW(wide_path, attributes)
       raise SystemCallError.new("SetFileAttributes", FFI.errno)
     end
 

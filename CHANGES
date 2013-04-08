@@ -1,4 +1,6 @@
-= 1.0.1 - ???
+= 1.0.1 - 8-Apr-2013
+* Fixed the HANDLE prototypes in the underlying FFI code for 64 bit Ruby.
+* Fixed the return type for SetFileAttributes, and adjusted the code to match.
 * Added some tests for constants.
 
 = 1.0.0 - 26-Nov-2012
