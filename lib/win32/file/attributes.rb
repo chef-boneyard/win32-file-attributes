@@ -10,7 +10,7 @@ class File
   extend Windows::File::Functions
 
   # The version of the win32-file library
-  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.1'
+  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.2'
 
   ## ABBREVIATED ATTRIBUTE CONSTANTS
 
@@ -69,7 +69,7 @@ class File
   # temporary
   #
   def self.attributes(file)
-    attributes = GetFileAttributesW(file.wincode)
+    attributes = GetFileAttributesW(string_check(file).wincode)
 
     if attributes == INVALID_FILE_ATTRIBUTES
       raise SystemCallError.new("GetFileAttributes", FFI.errno)
@@ -103,7 +103,7 @@ class File
   # guide you here.
   #
   def self.set_attributes(file, flags)
-    wfile = file.wincode
+    wfile = string_check(file).wincode
     attributes = GetFileAttributesW(wfile)
 
     if attributes == INVALID_FILE_ATTRIBUTES
@@ -122,7 +122,7 @@ class File
   # Removes the file attributes based on the given (numeric) +flags+.
   #
   def self.remove_attributes(file, flags)
-    wfile = file.wincode
+    wfile = string_check(file).wincode
     attributes = GetFileAttributesW(wfile)
 
     if attributes == INVALID_FILE_ATTRIBUTES
@@ -542,9 +542,19 @@ class File
 
   private
 
+  # Used to simulate Ruby's allowance for objects that implement to_str or to_path.
+  #
+  def self.string_check(arg)
+    return arg if arg.is_a?(String)
+    return arg.send(:to_str) if arg.respond_to?(:to_str, true)
+    return arg.to_path if arg.respond_to?(:to_path)
+    raise TypeError
+  end
+
   # Convenience method used internally for the various boolean singleton methods.
   #
   def self.check_for_attribute(file, attribute)
+    file = string_check(file)
     attributes = GetFileAttributesW(file.wincode)
 
     if attributes == INVALID_FILE_ATTRIBUTES

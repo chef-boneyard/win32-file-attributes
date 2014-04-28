@@ -7,6 +7,7 @@
 require 'ffi'
 require 'test-unit'
 require 'win32/file/attributes'
+require 'pathname'
 
 class TC_Win32_File_Attributes < Test::Unit::TestCase
   extend FFI::Library
@@ -27,7 +28,7 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
   end
 
   test "version is set to expected value" do
-    assert_equal('1.0.1', File::WIN32_FILE_ATTRIBUTE_VERSION)
+    assert_equal('1.0.2', File::WIN32_FILE_ATTRIBUTE_VERSION)
   end
 
   test "temporary? singleton method basic functionality" do
@@ -319,6 +320,15 @@ class TC_Win32_File_Attributes < Test::Unit::TestCase
 
   test "attributes singleton method returns expected results" do
     assert_equal(['archive', 'indexed'], File.attributes(@@file))
+  end
+
+  test "attributes singleton method accepts a pathname argument" do
+    assert_nothing_raised{ File.attributes(Pathname.new(@@file)) }
+  end
+
+  test "attribute singleton method requires a stringy argument" do
+    assert_raise(TypeError){ File.attributes(nil) }
+    assert_raise(TypeError){ File.attributes([]) }
   end
 
   test "set_attributes singleton method basic functionality" do
