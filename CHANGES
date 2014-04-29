@@ -1,3 +1,6 @@
+= 1.0.2 - 28-Apr-2014
+* The singleton methods now accept arguments that implement to_str or to_path.
+
 = 1.0.1 - 8-Apr-2013
 * Fixed the HANDLE prototypes in the underlying FFI code for 64 bit Ruby.
 * Fixed the return type for SetFileAttributes, and adjusted the code to match.
