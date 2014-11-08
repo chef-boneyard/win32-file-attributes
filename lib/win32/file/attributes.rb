@@ -276,12 +276,6 @@ class File
   # that compression is the default for newly created files and subdirectories.
   #
   def compressed=(bool)
-    in_buf = FFI::MemoryPointer.new(:ulong)
-    bytes  = FFI::MemoryPointer.new(:ulong)
-
-    compression_value = bool ? COMPRESSION_FORMAT_DEFAULT : COMPRESSION_FORMAT_NONE
-    in_buf.write_ulong(compression_value)
-
     # We can't use get_osfhandle here because we need specific attributes
     handle = CreateFileW(
       self.path.wincode,
@@ -296,6 +290,12 @@ class File
     if handle == INVALID_HANDLE_VALUE
       raise SystemCallError.new("CreateFile", FFI.errno)
     end
+
+    in_buf = FFI::MemoryPointer.new(:ulong)
+    bytes  = FFI::MemoryPointer.new(:ulong)
+
+    compression_value = bool ? COMPRESSION_FORMAT_DEFAULT : COMPRESSION_FORMAT_NONE
+    in_buf.write_ulong(compression_value)
 
     begin
       bool = DeviceIoControl(
@@ -314,6 +314,8 @@ class File
       end
     ensure
       CloseHandle(handle)
+      in_buf.free
+      bytes.free
     end
 
     self
@@ -449,8 +451,6 @@ class File
       return
     end
 
-    bytes = FFI::MemoryPointer.new(:ulong)
-
     handle = CreateFileW(
       self.path.wincode,
       FILE_READ_DATA | FILE_WRITE_DATA,
@@ -464,6 +464,8 @@ class File
     if handle == INVALID_HANDLE_VALUE
       raise SystemCallError.new("CreateFile", FFI.errno)
     end
+
+    bytes = FFI::MemoryPointer.new(:ulong)
 
     begin
       bool = DeviceIoControl(
@@ -482,6 +484,7 @@ class File
       end
     ensure
       CloseHandle(handle)
+      bytes.free
     end
 
     self
