@@ -1,3 +1,9 @@
+= 1.0.3 - 8-Nov-2014
+* Make FFI functions private.
+* Removed reference to Rubyforge in gemspec.
+* Use require_relative internally.
+* Explicitly free some FFI memory pointers where appropriate.
+
 = 1.0.2 - 28-Apr-2014
 * The singleton methods now accept arguments that implement to_str or to_path.
 
