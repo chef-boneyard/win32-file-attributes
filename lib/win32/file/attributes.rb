@@ -1,6 +1,6 @@
-require File.join(File.dirname(__FILE__), 'windows', 'constants')
-require File.join(File.dirname(__FILE__), 'windows', 'structs')
-require File.join(File.dirname(__FILE__), 'windows', 'functions')
+require_relative 'windows/constants'
+require_relative 'windows/structs'
+require_relative 'windows/functions'
 
 class File
   include Windows::File::Constants
@@ -10,7 +10,7 @@ class File
   extend Windows::File::Functions
 
   # The version of the win32-file library
-  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.2'
+  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.3'
 
   ## ABBREVIATED ATTRIBUTE CONSTANTS
 
