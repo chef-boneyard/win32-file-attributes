@@ -10,7 +10,7 @@ class File
   extend Windows::File::Functions
 
   # The version of the win32-file library
-  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.3'
+  WIN32_FILE_ATTRIBUTE_VERSION = '1.0.4'
 
   ## ABBREVIATED ATTRIBUTE CONSTANTS
 
