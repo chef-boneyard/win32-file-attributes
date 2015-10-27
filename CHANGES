@@ -1,3 +1,8 @@
+= 1.0.4 - 27-Oct-2015
+* This gem is now signed.
+* Added a win32-file-attributes.rb file for convenience.
+* All gem related tasks in the Rakefile now assume Rubygems 2.x.
+
 = 1.0.3 - 8-Nov-2014
 * Make FFI functions private.
 * Removed reference to Rubyforge in gemspec.
